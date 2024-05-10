@@ -12,6 +12,7 @@ public class MatrixMultiplication {
         List<List<Integer>> MatrixB;
         int startrow;
         int endrow;
+        int sum;
 
 
         public BlockMultiplier(List<List<Integer>> MatrixA, List<List<Integer>> MatrixB, List<List<Integer>> tempMatrixProduct, int startrow, int endrow) {
@@ -24,10 +25,19 @@ public class MatrixMultiplication {
 
         @Override
         public void run() {
-            /*
-            TODO
-                Perform the calculation and store the final values in tempMatrixProduct
-            */
+            int p = MatrixA.size(); //تعداد سطر های ماتریس اول
+            int r = MatrixB.get(0).size(); //تعداد ستون های ماتریس دوم
+            int q = MatrixA.get(0).size(); //تعداد ستون های ماتری اول که همان تعداد سطر های ماتریس دوم است
+
+            for(int i = startrow ; i < endrow ; i++){
+                for(int j = 0 ; j < r ; j++){
+                    sum = 0;
+                    for(int m = 0 ; m < q ; m++){
+                        sum += MatrixA.get(i).get(m) * MatrixB.get(m).get(j);
+                    }
+                    tempMatrixProduct.get(i).set(j , sum);
+                }
+            }
         }
     }
 
