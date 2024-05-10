@@ -8,8 +8,18 @@ public class MatrixMultiplication {
     public static class BlockMultiplier implements Runnable
     {
         List<List<Integer>> tempMatrixProduct;
-        public BlockMultiplier() {
-            // TODO
+        List<List<Integer>> MatrixA;
+        List<List<Integer>> MatrixB;
+        int startrow;
+        int endrow;
+
+
+        public BlockMultiplier(List<List<Integer>> MatrixA, List<List<Integer>> MatrixB, List<List<Integer>> tempMatrixProduct, int startrow, int endrow) {
+            this.MatrixA = MatrixA;
+            this.MatrixB = MatrixB;
+            this.tempMatrixProduct = tempMatrixProduct;
+            this.startrow = startrow;
+            this.endrow = endrow;
         }
 
         @Override
