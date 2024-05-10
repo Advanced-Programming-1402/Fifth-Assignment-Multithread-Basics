@@ -104,7 +104,7 @@ In Java, the join() method is used to pause the current thread (in this case, th
 
 5. If thread is interrupted during its execution, the InterruptedException is caught and the stack trace of the exception is printed.
 
-# So, the output of your code will be something like this:
+# So, the output of this code will be something like this:
 
 ## Running in: Thread-0
 ## Back to: main
