@@ -1,6 +1,7 @@
 package sbu.cs;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class TaskScheduler
@@ -12,7 +13,6 @@ public class TaskScheduler
          */
         String taskName;
         int processingTime;
-
         public Task(String taskName, int processingTime) {
             this.taskName = taskName;
             this.processingTime = processingTime;
@@ -23,29 +23,43 @@ public class TaskScheduler
 
         @Override
         public void run() {
-            /*
-            TODO
-                Simulate utilizing CPU by sleeping the thread for the specified processingTime
-             */
+            try {
+                Thread.sleep(processingTime);
+            } catch (InterruptedException e) {
+                System.out.println("thread Interrupted.");
+            }
+
         }
     }
 
     public static ArrayList<String> doTasks(ArrayList<Task> tasks)
     {
         ArrayList<String> finishedTasks = new ArrayList<>();
-
-        /*
-        TODO
-            Create a thread for each given task, And then start them based on which task has the highest priority
-            (highest priority belongs to the tasks that take more time to be completed).
-            You have to wait for each task to get done and then start the next task.
-            Don't forget to add each task's name to the finishedTasks after it's completely finished.
-         */
+        for (int i = 1; i < tasks.size(); i++) {
+            int j = i;
+            while (j > 0 && tasks.get(j).processingTime > tasks.get(j - 1).processingTime) {
+                Task save = tasks.get(j);
+                tasks.set(j, tasks.get(j - 1));
+                tasks.set(j - 1, save);
+                j--;
+            }
+        }
+        for (Task t: tasks) {
+            finishedTasks.add(t.taskName);
+        }
+        for (Task i: tasks) {
+            Thread thread = new Thread(i);
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                System.out.println("Interrupted.");
+            }
+        }
 
         return finishedTasks;
     }
 
     public static void main(String[] args) {
-        // Test your code here
     }
 }
