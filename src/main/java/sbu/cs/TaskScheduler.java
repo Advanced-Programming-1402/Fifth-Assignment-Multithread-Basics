@@ -23,29 +23,61 @@ public class TaskScheduler
 
         @Override
         public void run() {
-            /*
-            TODO
-                Simulate utilizing CPU by sleeping the thread for the specified processingTime
-             */
+           try{
+               Thread.sleep(processingTime);
+
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
         }
     }
 
     public static ArrayList<String> doTasks(ArrayList<Task> tasks)
     {
         ArrayList<String> finishedTasks = new ArrayList<>();
+        ArrayList<Task> sortedtask = new ArrayList<>();
 
-        /*
-        TODO
-            Create a thread for each given task, And then start them based on which task has the highest priority
-            (highest priority belongs to the tasks that take more time to be completed).
-            You have to wait for each task to get done and then start the next task.
-            Don't forget to add each task's name to the finishedTasks after it's completely finished.
-         */
+        for (Task task : tasks) {
+            boolean added = false;
+            for (int i = 0; i < sortedtask.size(); i++) {
+                if (task.processingTime >= sortedtask.get(i).processingTime) {
+                    sortedtask.add(i, task);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
+                sortedtask.add(task);
+            }
+        }
+        for (Task task : sortedtask) {
+            Thread thread = new Thread(task);
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finishedTasks.add(task.taskName);
+        }
 
         return finishedTasks;
     }
 
     public static void main(String[] args) {
-        // Test your code here
+        ArrayList<Task> tasks = new ArrayList<>();
+
+        tasks.add(new Task("A", 200));
+        tasks.add(new Task("B", 250));
+        tasks.add(new Task("C", 150));
+        tasks.add(new Task("E", 500));
+        tasks.add(new Task("F", 50));
+        tasks.add(new Task("G", 300));
+
+        ArrayList<String> finishedTasks = doTasks(tasks);
+
+        for (String task : finishedTasks) {
+            System.out.println(task);
+        }
     }
 }
