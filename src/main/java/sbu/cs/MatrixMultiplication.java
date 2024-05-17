@@ -72,7 +72,7 @@ public class MatrixMultiplication {
         Thread newThread4 = new Thread(BM4);
         newThread1.start();
         newThread2.start();
-        newThread3.start();K
+        newThread3.start();
         newThread4.start();
         try {
             newThread1.join();
