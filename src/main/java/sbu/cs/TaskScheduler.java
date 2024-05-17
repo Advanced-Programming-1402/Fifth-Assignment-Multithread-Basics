@@ -1,7 +1,6 @@
 package sbu.cs;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TaskScheduler
 {
@@ -23,29 +22,54 @@ public class TaskScheduler
 
         @Override
         public void run() {
-            /*
-            TODO
-                Simulate utilizing CPU by sleeping the thread for the specified processingTime
-             */
+            try {
+                Thread.sleep(processingTime);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     public static ArrayList<String> doTasks(ArrayList<Task> tasks)
     {
-        ArrayList<String> finishedTasks = new ArrayList<>();
+        ArrayList<String> finishedTasks;
+        try {
+            finishedTasks = new ArrayList<>();
+            ArrayList<Task> tempTasks = new ArrayList<>(sortTaskArrayList(tasks));
+            for (Task tempTask : tempTasks) {
+                Thread newThread = new Thread(tempTask);
+                newThread.start();
+                newThread.join();
+                finishedTasks.add(tempTask.taskName);
+            }
 
-        /*
-        TODO
-            Create a thread for each given task, And then start them based on which task has the highest priority
-            (highest priority belongs to the tasks that take more time to be completed).
-            You have to wait for each task to get done and then start the next task.
-            Don't forget to add each task's name to the finishedTasks after it's completely finished.
-         */
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return finishedTasks;
     }
 
+    public static ArrayList<Task> sortTaskArrayList(ArrayList<Task> task){
+        ArrayList<Task> tempTask = new ArrayList<>(task);
+        boolean swapped;
+        for (int i = 0; i < tempTask.size() - 1; i++) {
+            swapped = false;
+            for (int j = 0; j < tempTask.size() - i - 1; j++) {
+                if (tempTask.get(j).processingTime < tempTask.get(j + 1).processingTime){
+                    Task temp = tempTask.get(j);
+                    tempTask.set(j, tempTask.get(j + 1));
+                    tempTask.set(j + 1, temp);
+                    swapped = true;
+                }
+            }
+            if (!swapped){
+                break;
+            }
+        }
+        return tempTask;
+    }
     public static void main(String[] args) {
-        // Test your code here
+
     }
 }
