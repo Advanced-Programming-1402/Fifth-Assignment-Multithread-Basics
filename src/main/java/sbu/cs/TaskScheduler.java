@@ -1,15 +1,11 @@
 package sbu.cs;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class TaskScheduler
-{
-    public static class Task implements Runnable
-    {
-        /*
-            ------------------------- You don't need to modify this part of the code -------------------------
-         */
+public class TaskScheduler {
+    public static class Task implements Runnable {
         String taskName;
         int processingTime;
 
@@ -17,35 +13,53 @@ public class TaskScheduler
             this.taskName = taskName;
             this.processingTime = processingTime;
         }
-        /*
-            ------------------------- You don't need to modify this part of the code -------------------------
-         */
 
         @Override
         public void run() {
-            /*
-            TODO
-                Simulate utilizing CPU by sleeping the thread for the specified processingTime
-             */
+            try {
+                // Simulate CPU utilization by sleeping for the specified processing time
+                Thread.sleep(processingTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Task completed: " + taskName);
         }
     }
 
-    public static ArrayList<String> doTasks(ArrayList<Task> tasks)
-    {
+    public static ArrayList<String> doTasks(ArrayList<Task> tasks) {
         ArrayList<String> finishedTasks = new ArrayList<>();
 
-        /*
-        TODO
-            Create a thread for each given task, And then start them based on which task has the highest priority
-            (highest priority belongs to the tasks that take more time to be completed).
-            You have to wait for each task to get done and then start the next task.
-            Don't forget to add each task's name to the finishedTasks after it's completely finished.
-         */
+        // Sort tasks based on processing time (descending order)
+        Collections.sort(tasks, Comparator.comparingInt(task -> -task.processingTime));
+
+        // Create and start threads for each task
+        for (Task task : tasks) {
+            Thread thread = new Thread(task);
+            thread.start();
+            try {
+                // Wait for the thread to finish
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // Add task name to finishedTasks
+            finishedTasks.add(task.taskName);
+        }
 
         return finishedTasks;
     }
 
     public static void main(String[] args) {
-        // Test your code here
+        // Example usage
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new Task("Task A", 3000));
+        tasks.add(new Task("Task B", 2000));
+        tasks.add(new Task("Task C", 5000));
+
+        ArrayList<String> result = doTasks(tasks);
+        System.out.println("Order of task execution:");
+        for (String taskName : result) {
+            System.out.println(taskName);
+        }
     }
 }
