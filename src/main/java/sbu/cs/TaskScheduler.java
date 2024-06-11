@@ -1,6 +1,7 @@
 package sbu.cs;
 
 import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class TaskScheduler
@@ -20,19 +21,29 @@ public class TaskScheduler
         /*
             ------------------------- You don't need to modify this part of the code -------------------------
          */
-
+        public int getProcessingTime(){
+            return processingTime;
+        }
         @Override
         public void run() {
             /*
             TODO
                 Simulate utilizing CPU by sleeping the thread for the specified processingTime
              */
+            try {
+                Thread.sleep(processingTime);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
     public static ArrayList<String> doTasks(ArrayList<Task> tasks)
     {
         ArrayList<String> finishedTasks = new ArrayList<>();
+
+        //sorting tasks base on processing time
+        Collections.sort(tasks,Comparator.comparing(Task::getProcessingTime).reversed());
 
         /*
         TODO
@@ -42,6 +53,17 @@ public class TaskScheduler
             Don't forget to add each task's name to the finishedTasks after it's completely finished.
          */
 
+        //make a thread for each task and add the name of it to finishedTasks when it completed
+        for (Task task : tasks) {
+            try {
+                Thread thread = new Thread(task);
+                thread.start();
+                thread.join();  //join() method is for waiting for a task to completed and then go to another one
+                finishedTasks.add(task.taskName);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+        }
         return finishedTasks;
     }
 
